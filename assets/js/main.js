@@ -10,10 +10,10 @@
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
 
   /* ── config ──────────────────────────────────────────────── */
-  var WEDDING_DATE = new Date('2026-10-17T18:00:00+07:00');
+  var WEDDING_DATE = new Date('2027-01-09T16:00:00+07:00');   // 4 PM, Bangkok (ICT)
   var EVENTS = {
-    ceremony:  { title: 'Holy Matrimony — Johan & Vali', start: '20261017T030000Z', end: '20261017T050000Z', loc: 'Cathedral of Our Lady' },
-    reception: { title: 'Wedding Reception — Johan & Vali', start: '20261017T110000Z', end: '20261017T150000Z', loc: 'The Glasshouse Ballroom' }
+    ceremony:  { title: 'Holy Matrimony — Johan & Vali', start: '20270109T090000Z', end: '20270109T103000Z', loc: 'La Chapelle Bangkok — Jardin de Juliet' },
+    reception: { title: 'Wedding Reception — Johan & Vali', start: '20270109T110000Z', end: '20270109T150000Z', loc: 'La Chapelle Bangkok — Saint Hall' }
   };
   var GALLERY_COUNT = 18;
   var WISHES_PER_PAGE = 4;
@@ -340,8 +340,8 @@
     if (wrap) wrap.hidden = true;
     if (done) done.hidden = false;
     var labels = {
-      provided: 'Arranged hotel — our treat',
-      upgrade: 'Upgrade hotel — own expense',
+      provided: 'Asawin Grand Convention Hotel — our treat',
+      upgrade: 'The Ritz-Carlton, Bangkok — own expense',
       self: 'Self-arranged stay'
     };
     var parts = [];

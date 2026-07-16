@@ -279,7 +279,7 @@ h3.serif{ font-size:27px; line-height:1.2; }
 .radio-row{ display:flex; gap:8px; }
 .radio{ flex:1; }
 .radio input{ position:absolute; opacity:0; }
-.radio span{
+.radio input + span{
   display:block; text-align:center; font-size:11px; letter-spacing:.4px;
   border:1px solid var(--hairline); border-radius:2px; padding:11px 6px;
   cursor:pointer; transition:all .3s ease; color:var(--muted);
@@ -304,7 +304,7 @@ h3.serif{ font-size:27px; line-height:1.2; }
 /* guest details (stage 2) */
 #details h2{ margin-bottom:6px; }
 .radio-col{ display:flex; flex-direction:column; gap:8px; }
-.radio-col .radio span{
+.radio-col .radio input + span{
   text-align:left; padding:12px 14px; text-transform:none; letter-spacing:0;
   font-size:13px; line-height:1.45;
 }
@@ -313,6 +313,9 @@ h3.serif{ font-size:27px; line-height:1.2; }
   display:block; font-style:normal; font-size:11px; color:var(--muted); margin-top:2px;
 }
 .radio-col .radio input:checked + span{ border-color:var(--ink); background:rgba(229,224,216,.35); }
+.radio-col .stars{ color:#c4c4c4; font-size:11px; letter-spacing:2px; vertical-align:1px; white-space:nowrap; }
+.radio-col .radio span em a{ color:var(--muted); text-decoration:underline; text-underline-offset:2px; }
+.profile h2.profile-name{ font-size:34px; }
 #details-form input[type=date]{
   width:100%; font-family:'Inter',sans-serif; font-size:14px; font-weight:300;
   color:var(--ink); background:transparent;
