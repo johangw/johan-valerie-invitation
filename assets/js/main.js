@@ -429,6 +429,16 @@
     }
   });
 
+  /* count this open (per personalized link) — fire and forget */
+  if (API_URL && guestKey) {
+    try {
+      var openPing = new URLSearchParams();
+      openPing.append('action', 'open');
+      openPing.append('key', guestKey);
+      fetch(API_URL, { method: 'POST', body: openPing, keepalive: true }).catch(function () {});
+    } catch (e) {}
+  }
+
   /* returning guest: restore their state from the sheet */
   if (API_URL && guestKey) {
     fetch(API_URL + '?action=status&key=' + encodeURIComponent(guestKey))
