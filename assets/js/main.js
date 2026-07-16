@@ -17,6 +17,11 @@
   };
   var GALLERY_COUNT = 18;
   var WISHES_PER_PAGE = 4;
+
+  /* RSVP backend — Google Apps Script web app URL (see GOOGLE-SETUP.md).
+     While '' the site runs in offline demo mode: RSVPs stay in the
+     visitor's browser and the wishes wall shows sample entries. */
+  var API_URL = 'https://script.google.com/macros/s/AKfycbyXAc9vQmuxQzcst65aHr1bgUSuWBZX5n6KdgLVlou21kSZV_Rs97zma8hyYqkCPPnIoA/exec';
   var SEED_WISHES = [
     { name: 'Placeholder Guest', text: 'Wishing you a lifetime of love and happiness. Congratulations!' },
     { name: 'Another Friend', text: 'So happy for you both — may your days be full of laughter.' },
@@ -27,9 +32,11 @@
   /* ── personalization: ?to= & &max= ───────────────────────── */
   var params = new URLSearchParams(window.location.search);
   var guest = params.get('to');
+  var guestKey = '';
   if (guest) {
     var decoded;
     try { decoded = decodeURIComponent(guest); } catch (e) { decoded = guest; }
+    guestKey = decoded;
     $$('.guest-name-slot').concat([$('#guest-name')]).forEach(function (el) {
       if (el) el.textContent = decoded;
     });
@@ -179,10 +186,10 @@
   }
 
   /* ── section pager + floating quicknav ───────────────────── */
-  var sections = $$('.child');
   var pager = $('#pager');
   var quicknav = $('#quicknav');
   function onScroll() {
+    var sections = $$('.child').filter(function (s) { return !s.hidden; });
     var mid = window.innerHeight / 2;
     var current = 1;
     sections.forEach(function (sec, i) {
@@ -252,11 +259,10 @@
     try { return JSON.parse(localStorage.getItem('jv-wishes') || '[]'); }
     catch (e) { return []; }
   }
-  function renderWishes() {
+  function renderWishes(list) {
     if (!wishList) return;
     wishList.innerHTML = '';
-    var all = storedWishes().concat(SEED_WISHES);
-    all.forEach(function (w) {
+    list.forEach(function (w) {
       var div = document.createElement('div');
       div.className = 'wish';
       var strong = document.createElement('strong');
@@ -266,7 +272,27 @@
       div.appendChild(strong); div.appendChild(p);
       wishList.appendChild(div);
     });
+    if (!list.length) {
+      var empty = document.createElement('p');
+      empty.className = 'body muted';
+      empty.textContent = 'Be the first to leave your blessing.';
+      wishList.appendChild(empty);
+    }
     showWishPage(1);
+  }
+  function loadWishes() {
+    if (API_URL) {
+      fetch(API_URL + '?action=wishes')
+        .then(function (r) { return r.json(); })
+        .then(function (d) {
+          renderWishes((d && d.wishes ? d.wishes : []).map(function (w) {
+            return { name: w.n, text: w.t };
+          }));
+        })
+        .catch(function () { renderWishes([]); });
+    } else {
+      renderWishes(storedWishes().concat(SEED_WISHES));
+    }
   }
   function showWishPage(page) {
     var items = $$('.wish', wishList);
@@ -281,31 +307,155 @@
   }
   if (wishPrev) wishPrev.addEventListener('click', function () { showWishPage(wishPage - 1); });
   if (wishNext) wishNext.addEventListener('click', function () { showWishPage(wishPage + 1); });
-  renderWishes();
+  loadWishes();
 
-  /* RSVP submit → save locally, add wish, thank the guest */
+  /* ── two-stage RSVP ──────────────────────────────────────── */
+  function postApi(fields) {
+    var body = new URLSearchParams();
+    Object.keys(fields).forEach(function (k) { body.append(k, fields[k]); });
+    return fetch(API_URL, { method: 'POST', body: body })
+      .then(function (r) { return r.json(); });
+  }
+
+  var detailsSection = $('#details');
+  var detailsForm = $('#details-form');
+
+  function scrollToDetails() {
+    document.documentElement.style.scrollSnapType = 'none';
+    detailsSection.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(function () {
+      document.documentElement.style.scrollSnapType = 'y mandatory';
+    }, 1600);
+  }
+  function unlockDetails(scroll) {
+    if (!detailsSection) return;
+    if (detailsSection.hidden) {
+      detailsSection.hidden = false;
+      onScroll();
+    }
+    if (scroll) scrollToDetails();
+  }
+  function showDetailsDone(accomCode, arrival) {
+    var wrap = $('#details-form-wrap'), done = $('#details-done');
+    if (wrap) wrap.hidden = true;
+    if (done) done.hidden = false;
+    var labels = {
+      provided: 'Arranged hotel — our treat',
+      upgrade: 'Upgrade hotel — own expense',
+      self: 'Self-arranged stay'
+    };
+    var parts = [];
+    if (labels[accomCode]) parts.push(labels[accomCode]);
+    if (arrival) parts.push('arriving ' + arrival);
+    var sum = $('#details-summary');
+    if (sum) sum.textContent = parts.join('  ·  ');
+  }
+
+  /* stage 1: attendance */
   var form = $('#rsvp-form');
   if (form) form.addEventListener('submit', function (e) {
     e.preventDefault();
-    var name = ($('#rsvp-name').value || 'Guest').trim();
-    var text = ($('#rsvp-wishes').value || '').trim();
-    if (text) {
-      var list = storedWishes();
-      list.unshift({ name: name, text: text });
-      try { localStorage.setItem('jv-wishes', JSON.stringify(list.slice(0, 40))); } catch (err) {}
-      renderWishes();
-    }
     var btn = $('button[type=submit]', form);
-    if (btn) {
-      btn.textContent = 'Thank you for your confirmation!';
-      btn.disabled = true;
-      setTimeout(function () {
-        btn.textContent = 'Send Confirmation';
-        btn.disabled = false;
-      }, 3200);
+    var name = ($('#rsvp-name').value || '').trim();
+    var text = ($('#rsvp-wishes').value || '').trim();
+    var attRadio = form.querySelector('input[name=attendance]:checked');
+    var att = attRadio ? attRadio.value : 'yes';
+    var pax = parseInt(guestsInput && guestsInput.value, 10) || 1;
+    if (!name) { $('#rsvp-name').focus(); return; }
+    if ($('#rsvp-hp') && $('#rsvp-hp').value) return;
+
+    function afterOk() {
+      var note = $('#rsvp-note');
+      if (att === 'yes') {
+        if (btn) { btn.textContent = 'Confirmed ✓ — one more step below'; btn.disabled = true; }
+        if (note) note.textContent = text
+          ? 'Your wish will appear on the wall once approved'
+          : 'Please complete your guest details below';
+        unlockDetails(true);
+      } else {
+        if (btn) { btn.textContent = 'Thank you — we’ll miss you!'; btn.disabled = true; }
+        if (note && text) note.textContent = 'Your wish will appear on the wall once approved';
+      }
     }
-    $('#rsvp-wishes').value = '';
+
+    if (API_URL) {
+      if (btn) { btn.textContent = 'Sending…'; btn.disabled = true; }
+      postApi({ action: 'rsvp', key: guestKey || name, name: name,
+                attending: att, pax: pax, wishes: text, hp: '' })
+        .then(function (d) {
+          if (d && d.ok) { afterOk(); loadWishes(); }
+          else throw new Error((d && d.error) || 'failed');
+        })
+        .catch(function () {
+          if (btn) { btn.textContent = 'Couldn’t send — tap to retry'; btn.disabled = false; }
+        });
+    } else {
+      if (text) {
+        var list = storedWishes();
+        list.unshift({ name: name, text: text });
+        try { localStorage.setItem('jv-wishes', JSON.stringify(list.slice(0, 40))); } catch (err) {}
+        loadWishes();
+      }
+      afterOk();
+    }
   });
+
+  /* stage 2: guest details (accommodation + arrival) */
+  if (detailsForm) detailsForm.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var chosen = detailsForm.querySelector('input[name=accommodation]:checked');
+    var note = $('#details-note');
+    if (!chosen) {
+      if (note) note.textContent = 'Please choose an accommodation option first';
+      return;
+    }
+    var arrival = ($('#details-arrival') && $('#details-arrival').value) || '';
+    var btn = $('button[type=submit]', detailsForm);
+    var name = ($('#rsvp-name').value || '').trim();
+
+    if (API_URL) {
+      if (btn) { btn.textContent = 'Saving…'; btn.disabled = true; }
+      postApi({ action: 'details', key: guestKey || name,
+                accommodation: chosen.value, arrival: arrival })
+        .then(function (d) {
+          if (d && d.ok) showDetailsDone(chosen.value, arrival);
+          else throw new Error((d && d.error) || 'failed');
+        })
+        .catch(function () {
+          if (btn) { btn.textContent = 'Couldn’t save — tap to retry'; btn.disabled = false; }
+        });
+    } else {
+      showDetailsDone(chosen.value, arrival);
+    }
+  });
+
+  /* returning guest: restore their state from the sheet */
+  if (API_URL && guestKey) {
+    fetch(API_URL + '?action=status&key=' + encodeURIComponent(guestKey))
+      .then(function (r) { return r.json(); })
+      .then(function (d) {
+        if (!d || !d.found) return;
+        if (d.name && $('#rsvp-name')) $('#rsvp-name').value = d.name;
+        if (d.pax && guestsInput) {
+          var cap = parseInt(guestsInput.max, 10) || 99;
+          guestsInput.value = Math.min(d.pax, cap);
+        }
+        var isYes = String(d.attending).toLowerCase() === 'yes';
+        var radio = form && form.querySelector('input[name=attendance][value="' + (isYes ? 'yes' : 'no') + '"]');
+        if (radio) radio.checked = true;
+        if (d.wishes && $('#rsvp-wishes')) $('#rsvp-wishes').value = d.wishes;
+        if (isYes) {
+          unlockDetails(false);
+          if (d.accommodation && detailsForm) {
+            var acc = detailsForm.querySelector('input[name=accommodation][value="' + d.accommodation + '"]');
+            if (acc) acc.checked = true;
+          }
+          if (d.arrival && $('#details-arrival')) $('#details-arrival').value = d.arrival;
+          if (d.detailsDone) showDetailsDone(d.accommodation, d.arrival);
+        }
+      })
+      .catch(function () {});
+  }
 
   /* ── gallery: swiper + custom lightbox ───────────────────── */
   var galleryImages = [];

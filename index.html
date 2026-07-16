@@ -224,9 +224,48 @@
         </div>
         <label class="field-label" for="rsvp-wishes">Wishes</label>
         <textarea id="rsvp-wishes" rows="3" maxlength="500" placeholder="Share your blessings for us&hellip;"></textarea>
-        <button type="submit" class="btn solid">Send Confirmation</button>
-        <p class="micro muted center">Placeholder — submissions stay on this device only</p>
+        <input type="text" name="website" id="rsvp-hp" tabindex="-1" autocomplete="off" aria-hidden="true">
+        <button type="submit" class="btn solid">Confirm Attendance</button>
+        <p class="micro muted center" id="rsvp-note">Kindly confirm before the celebration</p>
       </form>
+    </div>
+  </section>
+
+  <!-- 10b · GUEST DETAILS (unlocks after an "attending" confirmation) -->
+  <section class="child" id="details" hidden>
+    <div class="content" data-aos="fade">
+      <div id="details-form-wrap">
+        <p class="ovo">ONE LAST STEP</p>
+        <h2 class="serif">Guest Details</h2>
+        <form id="details-form" autocomplete="off">
+          <label class="field-label">Accommodation</label>
+          <div class="radio-col">
+            <label class="radio"><input type="radio" name="accommodation" value="provided"><span><strong>Stay at our arranged hotel</strong><em>Our treat &mdash; hotel name to follow</em></span></label>
+            <label class="radio"><input type="radio" name="accommodation" value="upgrade"><span><strong>Upgrade hotel</strong><em>At your own expense &mdash; details to follow</em></span></label>
+            <label class="radio"><input type="radio" name="accommodation" value="self"><span><strong>I&rsquo;ll arrange my own stay</strong><em>No accommodation needed</em></span></label>
+          </div>
+          <label class="field-label" for="details-arrival">Arrival Date <span class="optional">(optional)</span></label>
+          <input id="details-arrival" type="date" min="2026-10-10" max="2026-10-18">
+          <div class="notes-card">
+            <p class="micro">GOOD TO KNOW</p>
+            <ul>
+              <li><strong>Dress code</strong> &mdash; Formal, earth tones (placeholder)</li>
+              <li><strong>Schedule</strong> &mdash; Doors open 30 minutes before each event (placeholder)</li>
+              <li><strong>Contact</strong> &mdash; WhatsApp +62 ____ ____ ____ (placeholder)</li>
+            </ul>
+          </div>
+          <button type="submit" class="btn solid">Complete RSVP</button>
+          <p class="micro muted center" id="details-note">Required to complete your confirmation</p>
+        </form>
+      </div>
+      <div id="details-done" hidden>
+        <p class="ovo">ALL SET</p>
+        <h2 class="serif">Thank You!</h2>
+        <p class="serif-italic done-line">Your RSVP is complete.<br>We can&rsquo;t wait to celebrate with you.</p>
+        <div class="hairline"></div>
+        <p class="body" id="details-summary"></p>
+        <p class="micro muted">Need to change something? Just fill the form again with your link.</p>
+      </div>
     </div>
   </section>
 

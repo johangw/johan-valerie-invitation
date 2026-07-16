@@ -298,6 +298,39 @@ h3.serif{ font-size:27px; line-height:1.2; }
 .stepper input::-webkit-outer-spin-button, .stepper input::-webkit-inner-spin-button{ -webkit-appearance:none; }
 #rsvp .micro.center{ margin-top:12px; }
 
+/* honeypot — invisible to humans, tempting to bots */
+#rsvp-hp{ position:absolute !important; left:-9999px !important; width:1px; height:1px; opacity:0; }
+
+/* guest details (stage 2) */
+#details h2{ margin-bottom:6px; }
+.radio-col{ display:flex; flex-direction:column; gap:8px; }
+.radio-col .radio span{
+  text-align:left; padding:12px 14px; text-transform:none; letter-spacing:0;
+  font-size:13px; line-height:1.45;
+}
+.radio-col .radio span strong{ display:block; font-weight:500; color:var(--ink); }
+.radio-col .radio span em{
+  display:block; font-style:normal; font-size:11px; color:var(--muted); margin-top:2px;
+}
+.radio-col .radio input:checked + span{ border-color:var(--ink); background:rgba(229,224,216,.35); }
+#details-form input[type=date]{
+  width:100%; font-family:'Inter',sans-serif; font-size:14px; font-weight:300;
+  color:var(--ink); background:transparent;
+  border:1px solid var(--hairline); border-radius:2px; padding:11px 14px; outline:none;
+}
+#details-form input[type=date]:focus{ border-color:var(--ink-2); }
+.optional{ text-transform:none; letter-spacing:.4px; color:var(--muted); }
+.notes-card{
+  border:1px solid var(--hairline); border-radius:2px; border-left:2px solid var(--cream);
+  padding:14px 16px; margin-top:18px; text-align:left;
+}
+.notes-card .micro{ margin-bottom:8px; color:var(--muted); }
+.notes-card ul{ list-style:none; }
+.notes-card li{ font-size:12.5px; font-weight:300; line-height:1.9; color:var(--ink-2); }
+.notes-card li strong{ font-weight:500; color:var(--ink); }
+#details-done .done-line{ font-size:21px; line-height:1.55; margin:8px 0 4px; }
+#details-summary{ color:var(--ink-2); }
+
 /* wishes */
 #wishes h2{ margin-bottom:20px; }
 #wish-list{ text-align:left; min-height:264px; }
