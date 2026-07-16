@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+<title>The Wedding of Johan &amp; Vali</title>
+<meta name="description" content="We invite you to celebrate the wedding of Johan & Vali — Saturday, 17 October 2026.">
+
+<!-- Fonts: Instrument Serif (display), Inter (labels), Ovo (tracked accents), Pinyon Script (script) -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Instrument+Serif:ital@0;1&family=Inter:wght@300;400;500;600&family=Ovo&family=Pinyon+Script&display=swap" rel="stylesheet">
+
+<!-- Libraries -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/aos@2.3.1/dist/aos.css">
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css">
+
+<link rel="stylesheet" href="assets/css/style.css">
+</head>
+<body>
+
+<!-- ══════════════════ PRELOADER ══════════════════ -->
+<div id="preloader">
+  <div class="strobe" aria-hidden="true">
+    <img src="assets/img/strobe-01.jpg" alt="" class="active">
+    <img src="assets/img/strobe-02.jpg" alt="">
+    <img src="assets/img/strobe-03.jpg" alt="">
+    <img src="assets/img/strobe-04.jpg" alt="">
+    <img src="assets/img/strobe-05.jpg" alt="">
+    <img src="assets/img/strobe-06.jpg" alt="">
+    <img src="assets/img/strobe-07.jpg" alt="">
+    <img src="assets/img/strobe-08.jpg" alt="">
+    <img src="assets/img/strobe-09.jpg" alt="">
+    <img src="assets/img/strobe-10.jpg" alt="">
+  </div>
+  <div class="preloader-inner">
+    <p class="kicker split-kicker">WE INVITE YOU TO CELEBRATE</p>
+    <h1 class="names split-names">Johan &amp; Vali</h1>
+    <p class="date-line">SATURDAY, 17 OCTOBER 2026</p>
+  </div>
+  <div class="preloader-count"><span id="progress-percentage">0</span></div>
+</div>
+
+<!-- ══════════════════ COVER (locked until opened) ══════════════════ -->
+<div id="cover">
+  <div class="cover-bg" style="background-image:url('assets/img/cover.jpg')"></div>
+  <div class="cover-scrim"></div>
+  <div class="cover-content">
+    <p class="kicker">THE WEDDING OF</p>
+    <h1 class="names serif">Johan &amp; Vali</h1>
+    <p class="date-line">SATURDAY, 17 OCTOBER 2026</p>
+    <div class="cover-guest glass">
+      <p class="micro">Dear,</p>
+      <h2 id="guest-name" class="serif-italic">Our Beloved Guest</h2>
+      <p class="micro muted">We apologize if there is any misspelling of name or title</p>
+    </div>
+    <button id="open-invitation" type="button">
+      <span>Open Invitation</span>
+    </button>
+  </div>
+</div>
+
+<!-- ══════════════════ FIXED UI ══════════════════ -->
+<aside id="side-panel" aria-hidden="true">
+  <div class="panel-photo" style="background-image:url('assets/img/panel.jpg')"></div>
+  <div class="panel-caption">
+    <p class="kicker light">THE WEDDING OF</p>
+    <h2 class="serif light">Johan &amp; Vali</h2>
+    <p class="micro light">SATURDAY, 17 OCTOBER 2026 — FLORENCE OF OUR HEARTS</p>
+  </div>
+</aside>
+
+<video id="video-backdrop" src="assets/video/hero.mp4" muted loop playsinline preload="metadata" poster="assets/img/guest.jpg"></video>
+
+<button id="sound-toggle" aria-label="Toggle music" hidden>
+  <svg id="icon-play" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M5 4.5v15l13-7.5-13-7.5Z"/></svg>
+  <svg id="icon-pause" viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="1.6" style="display:none"><path d="M7 4.5v15M17 4.5v15"/></svg>
+</button>
+
+<div id="pager" hidden>1/13</div>
+
+<nav id="quicknav" hidden>
+  <a href="#hero">Home</a>
+  <a href="#events">Events</a>
+  <a href="#rsvp">RSVP</a>
+  <a href="#gallery">Gallery</a>
+</nav>
+
+<!-- ══════════════════ INVITATION COLUMN ══════════════════ -->
+<main id="invitation">
+
+  <!-- 1 · HERO over video -->
+  <section class="child window" id="hero">
+    <div class="hero-content">
+      <p class="kicker light split-kicker-hero">WE INVITE YOU TO CELEBRATE</p>
+      <h1 class="names light split-names-hero">Johan &amp; Vali</h1>
+      <p class="date-line light">SATURDAY, 17 OCTOBER 2026</p>
+    </div>
+    <div class="scroll-cue" aria-hidden="true">
+      <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="currentColor" stroke-width="1.4"><path d="M6 9l6 6 6-6"/></svg>
+    </div>
+  </section>
+
+  <!-- 2 · DEAR GUEST -->
+  <section class="child photo-section" id="dear" style="background-image:url('assets/img/guest.jpg')">
+    <div class="section-scrim"></div>
+    <div class="content glass" data-aos="fade">
+      <p class="micro">DEAR,</p>
+      <h2 class="serif-italic guest-name-slot">Our Beloved Guest</h2>
+      <div class="hairline"></div>
+      <p class="body">With joy in our hearts, we warmly invite you to be part of<br>the beginning of our forever.</p>
+      <p class="micro muted">We apologize if there is any misspelling of name or title</p>
+    </div>
+  </section>
+
+  <!-- 3 · VERSE -->
+  <section class="child photo-section" id="verse" style="background-image:url('assets/img/verse.jpg')">
+    <div class="section-scrim dark"></div>
+    <div class="content" data-aos="fade">
+      <p class="ovo light">MATTHEW 19 : 6</p>
+      <p class="serif-italic light verse-text">&ldquo;So they are no longer two, but one flesh.<br>Therefore what God has joined together,<br>let no one separate.&rdquo;</p>
+    </div>
+  </section>
+
+  <!-- 4 · GROOM -->
+  <section class="child profile" id="groom">
+    <div class="profile-photo" data-aos="fade"><img src="assets/img/groom.jpg" alt="The Groom"></div>
+    <div class="content" data-aos="fade">
+      <p class="ovo">THE GROOM</p>
+      <h2 class="serif">Johan</h2>
+      <p class="micro muted">THE SON OF</p>
+      <p class="body">Mr. ____________ &amp; Mrs. ____________</p>
+    </div>
+  </section>
+
+  <!-- 5 · BRIDE -->
+  <section class="child profile" id="bride">
+    <div class="profile-photo" data-aos="fade"><img src="assets/img/bride.jpg" alt="The Bride"></div>
+    <div class="content" data-aos="fade">
+      <p class="ovo">THE BRIDE</p>
+      <h2 class="serif">Vali</h2>
+      <p class="micro muted">THE DAUGHTER OF</p>
+      <p class="body">Mr. ____________ &amp; Mrs. ____________</p>
+    </div>
+  </section>
+
+  <!-- 6 · LOVE STORY -->
+  <section class="child photo-section" id="story" style="background-image:url('assets/img/story.jpg')">
+    <div class="section-scrim dark"></div>
+    <div class="content" data-aos="fade">
+      <p class="ovo light">OUR LOVE STORY</p>
+      <h2 class="serif light">A Story Written<br>Into Forever</h2>
+      <p class="serif-italic light story-text">Placeholder for your story — how you met, the laughter, the journey, and the moment you both knew. A few short lines feel best here.</p>
+    </div>
+  </section>
+
+  <!-- 7 · FILM window over video -->
+  <section class="child window" id="film">
+    <div class="film-caption glass" data-aos="fade">
+      <p class="ovo">A MOMENT IN MOTION</p>
+      <p class="micro muted">FILM BY YOUR VIDEOGRAPHER</p>
+    </div>
+  </section>
+
+  <!-- 8 · EVENTS -->
+  <section class="child photo-section" id="events" style="background-image:url('assets/img/events.jpg')">
+    <div class="section-scrim"></div>
+    <div class="content" data-aos="fade">
+      <p class="ovo">SAVE THE DATE</p>
+      <div class="event-card glass">
+        <h3 class="serif">Holy Matrimony</h3>
+        <p class="micro">10 : 00 AM</p>
+        <p class="body">Cathedral of Our Lady<br><span class="muted">Placeholder address line</span></p>
+        <div class="btn-row">
+          <a class="btn ghost" data-calendar="ceremony" href="#">Add to Calendar</a>
+          <a class="btn ghost" href="https://maps.google.com/?q=Cathedral" target="_blank" rel="noopener">View Maps</a>
+        </div>
+      </div>
+      <div class="event-card glass">
+        <h3 class="serif">The Reception</h3>
+        <p class="micro">6 : 00 PM</p>
+        <p class="body">The Glasshouse Ballroom<br><span class="muted">Placeholder address line</span></p>
+        <div class="btn-row">
+          <a class="btn ghost" data-calendar="reception" href="#">Add to Calendar</a>
+          <a class="btn ghost" href="https://maps.google.com/?q=Ballroom" target="_blank" rel="noopener">View Maps</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 9 · COUNTDOWN -->
+  <section class="child photo-section" id="countdown" style="background-image:url('assets/img/countdown.jpg')">
+    <div class="section-scrim dark"></div>
+    <div class="content" data-aos="fade">
+      <p class="ovo light">ALMOST TIME FOR OUR CELEBRATION</p>
+      <div class="count-grid light">
+        <div class="count-cell"><span id="cd-days">0</span><label>Days</label></div>
+        <div class="count-cell"><span id="cd-hours">0</span><label>Hours</label></div>
+        <div class="count-cell"><span id="cd-mins">0</span><label>Minutes</label></div>
+        <div class="count-cell"><span id="cd-secs">0</span><label>Seconds</label></div>
+      </div>
+      <p class="serif-italic light">Saturday, 17 October 2026</p>
+    </div>
+  </section>
+
+  <!-- 10 · RSVP -->
+  <section class="child" id="rsvp">
+    <div class="content" data-aos="fade">
+      <p class="ovo">RSVP</p>
+      <h2 class="serif">Kindly Confirm<br>Your Presence</h2>
+      <form id="rsvp-form" autocomplete="off">
+        <label class="field-label" for="rsvp-name">Full Name</label>
+        <input id="rsvp-name" type="text" placeholder="Your name" maxlength="40" required>
+        <label class="field-label">Attendance</label>
+        <div class="radio-row">
+          <label class="radio"><input type="radio" name="attendance" value="yes" checked><span>Joyfully Attending</span></label>
+          <label class="radio"><input type="radio" name="attendance" value="no"><span>Regretfully Unable</span></label>
+        </div>
+        <label class="field-label" id="guest-count-label" for="rsvp-guests">No of Guest</label>
+        <div class="stepper">
+          <button type="button" id="step-minus" aria-label="Fewer guests">&minus;</button>
+          <input id="rsvp-guests" type="number" value="1" min="1" max="2" readonly>
+          <button type="button" id="step-plus" aria-label="More guests">+</button>
+        </div>
+        <label class="field-label" for="rsvp-wishes">Wishes</label>
+        <textarea id="rsvp-wishes" rows="3" maxlength="500" placeholder="Share your blessings for us&hellip;"></textarea>
+        <button type="submit" class="btn solid">Send Confirmation</button>
+        <p class="micro muted center">Placeholder — submissions stay on this device only</p>
+      </form>
+    </div>
+  </section>
+
+  <!-- 11 · WISHES -->
+  <section class="child" id="wishes">
+    <div class="content" data-aos="fade">
+      <p class="ovo">WISHES</p>
+      <h2 class="serif">Words of Blessing</h2>
+      <div id="wish-list"></div>
+      <div class="wish-nav">
+        <button id="wish-prev" type="button" class="btn ghost" hidden>&larr; Prev</button>
+        <button id="wish-next" type="button" class="btn ghost" hidden>Next &rarr;</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- 12 · GALLERY -->
+  <section class="child" id="gallery">
+    <div class="content wide" data-aos="fade">
+      <p class="ovo">OUR MOMENTS</p>
+      <h2 class="serif">Johan &amp; Vali</h2>
+      <div class="swiper" id="gallery-swiper">
+        <div class="swiper-wrapper">
+          <!-- slides injected by main.js (gallery-01..18) -->
+        </div>
+        <div class="swiper-pagination"></div>
+      </div>
+      <p class="micro muted center">Tap image for preview</p>
+    </div>
+  </section>
+
+  <!-- 13 · CLOSING -->
+  <section class="child photo-section" id="closing" style="background-image:url('assets/img/closing.jpg')">
+    <div class="section-scrim dark"></div>
+    <div class="content" data-aos="fade">
+      <p class="serif-italic light closing-line">We can&rsquo;t wait to celebrate<br>our special day with you</p>
+      <h2 class="names light">Johan &amp; Vali</h2>
+      <div class="hairline light"></div>
+      <p class="micro light">PLACEHOLDER INVITATION &mdash; STYLE &amp; MOTION STUDY</p>
+      <p class="micro light muted">Crafted with love, 2026</p>
+    </div>
+  </section>
+
+</main>
+
+<!-- ══════════════════ LIGHTBOX ══════════════════ -->
+<div id="lightbox" hidden>
+  <img id="lightbox-img" src="" alt="">
+  <button id="lightbox-prev" aria-label="Previous">&#10094;</button>
+  <button id="lightbox-next" aria-label="Next">&#10095;</button>
+  <button id="lightbox-close" aria-label="Close">&#10005;</button>
+  <div id="lightbox-counter"></div>
+</div>
+
+<audio id="song" loop preload="auto">
+  <source src="assets/audio/soundtrack.mp3" type="audio/mpeg">
+</audio>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/SplitText.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/aos@2.3.1/dist/aos.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+<script src="assets/js/main.js"></script>
+</body>
+</html>

@@ -1,0 +1,384 @@
+/* ═══════════════════════════════════════════════════════════════
+   Johan & Vali — placeholder invitation
+   Motion study: preloader strobe, split-text loops, blur cover
+   exit, scroll-snap deck, audio system, gallery + lightbox
+   ═══════════════════════════════════════════════════════════════ */
+(function () {
+  'use strict';
+
+  var $ = function (s, c) { return (c || document).querySelector(s); };
+  var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
+
+  /* ── config ──────────────────────────────────────────────── */
+  var WEDDING_DATE = new Date('2026-10-17T18:00:00+07:00');
+  var EVENTS = {
+    ceremony:  { title: 'Holy Matrimony — Johan & Vali', start: '20261017T030000Z', end: '20261017T050000Z', loc: 'Cathedral of Our Lady' },
+    reception: { title: 'Wedding Reception — Johan & Vali', start: '20261017T110000Z', end: '20261017T150000Z', loc: 'The Glasshouse Ballroom' }
+  };
+  var GALLERY_COUNT = 18;
+  var WISHES_PER_PAGE = 4;
+  var SEED_WISHES = [
+    { name: 'Placeholder Guest', text: 'Wishing you a lifetime of love and happiness. Congratulations!' },
+    { name: 'Another Friend', text: 'So happy for you both — may your days be full of laughter.' },
+    { name: 'Family Member', text: 'God bless your union. We love you!' },
+    { name: 'College Crew', text: 'Finally! Can’t wait to celebrate with you two in October.' }
+  ];
+
+  /* ── personalization: ?to= & &max= ───────────────────────── */
+  var params = new URLSearchParams(window.location.search);
+  var guest = params.get('to');
+  if (guest) {
+    var decoded;
+    try { decoded = decodeURIComponent(guest); } catch (e) { decoded = guest; }
+    $$('.guest-name-slot').concat([$('#guest-name')]).forEach(function (el) {
+      if (el) el.textContent = decoded;
+    });
+    var nameInput = $('#rsvp-name');
+    if (nameInput) nameInput.value = decoded;
+  }
+  var maxGuests = parseInt(params.get('max'), 10);
+  var guestsInput = $('#rsvp-guests');
+  if (guestsInput && maxGuests > 0) {
+    guestsInput.max = maxGuests;
+    var lbl = $('#guest-count-label');
+    if (lbl) lbl.textContent = 'No of Guest (Max ' + maxGuests + ')';
+  }
+
+  /* ── audio system ────────────────────────────────────────── */
+  var song = $('#song');
+  var soundBtn = $('#sound-toggle');
+  var iconPlay = $('#icon-play');
+  var iconPause = $('#icon-pause');
+  var opened = false;
+
+  function playAudio() { if (song) song.play().catch(function () {}); }
+  function pauseAudio() { if (song) song.pause(); }
+  function syncSoundIcon() {
+    var playing = song && !song.paused;
+    if (iconPlay) iconPlay.style.display = playing ? 'none' : 'block';
+    if (iconPause) iconPause.style.display = playing ? 'block' : 'none';
+    if (soundBtn) soundBtn.classList.toggle('playing', !!playing);
+  }
+  if (song) {
+    song.addEventListener('play', syncSoundIcon);
+    song.addEventListener('pause', syncSoundIcon);
+  }
+  if (soundBtn) soundBtn.addEventListener('click', function () {
+    if (!song) return;
+    if (song.paused) playAudio(); else pauseAudio();
+  });
+  document.addEventListener('visibilitychange', function () {
+    if (!opened) return;
+    var video = $('#video-backdrop');
+    if (document.hidden) { pauseAudio(); if (video) video.pause(); }
+    else { playAudio(); if (video) video.play().catch(function () {}); }
+  });
+
+  /* ── scroll lock while cover is up ───────────────────────── */
+  window.onbeforeunload = function () { window.scrollTo(0, 0); };
+  function disableScrolling() {
+    var x = window.scrollX, y = window.scrollY;
+    window.onscroll = function () { window.scrollTo(x, y); };
+    document.body.style.overflow = 'hidden';
+    document.body.style.height = '100vh';
+  }
+  function enableScrolling() {
+    window.onscroll = null;
+    document.body.style.overflow = '';
+    document.body.style.height = '';
+  }
+  disableScrolling();
+
+  /* ── preloader: counter + photo strobe ───────────────────── */
+  var preloader = $('#preloader');
+  var counterEl = $('#progress-percentage');
+  var strobeImgs = $$('#preloader .strobe img');
+  var strobeIdx = 0;
+  var strobeTimer = setInterval(function () {
+    if (!strobeImgs.length) return;
+    strobeImgs[strobeIdx].classList.remove('active');
+    strobeIdx = (strobeIdx + 1) % strobeImgs.length;
+    strobeImgs[strobeIdx].classList.add('active');
+  }, 200);
+
+  var width = 0;
+  var countTimer = setInterval(function () {
+    if (width >= 100) {
+      clearInterval(countTimer);
+      setTimeout(function () {
+        if (preloader) preloader.classList.add('hide');
+        setTimeout(function () {
+          clearInterval(strobeTimer);
+          if (preloader && preloader.parentNode) preloader.parentNode.removeChild(preloader);
+        }, 900);
+      }, 400);
+    } else {
+      width++;
+      if (counterEl) counterEl.textContent = width;
+    }
+  }, 22);
+
+  /* ── split-text loops (GSAP + SplitText) ─────────────────── */
+  function initSplitLoops() {
+    if (typeof gsap === 'undefined' || typeof SplitText === 'undefined') return;
+    gsap.registerPlugin(SplitText);
+    function loopIn(selector, fromX, delay) {
+      var el = $(selector);
+      if (!el) return;
+      var split = new SplitText(el, { type: 'chars' });
+      gsap.timeline({ repeat: -1, repeatDelay: 2.2, delay: delay || 0 })
+        .from(split.chars, { x: fromX, opacity: 0, duration: 0.7, ease: 'power3.out', stagger: 0.035 })
+        .to(split.chars, { opacity: 0, duration: 0.6, ease: 'power2.inOut', stagger: 0.012 }, '+=2.6');
+    }
+    loopIn('.split-kicker', 13, 0);
+    loopIn('.split-names', -13, 0.15);
+    loopIn('.split-kicker-hero', 13, 0);
+    loopIn('.split-names-hero', -13, 0.15);
+  }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(initSplitLoops);
+  else initSplitLoops();
+
+  /* ── open invitation ─────────────────────────────────────── */
+  var cover = $('#cover');
+  var openBtn = $('#open-invitation');
+  if (openBtn) openBtn.addEventListener('click', function () {
+    if (opened) return;
+    opened = true;
+
+    document.documentElement.style.scrollSnapType = 'none';
+    if (cover) {
+      cover.classList.add('fade-out');
+      setTimeout(function () { if (cover.parentNode) cover.parentNode.removeChild(cover); }, 500);
+    }
+    enableScrolling();
+    playAudio();
+    var video = $('#video-backdrop');
+    if (video) video.play().catch(function () {});
+
+    ['#sound-toggle', '#pager', '#quicknav'].forEach(function (s) {
+      var el = $(s); if (el) el.hidden = false;
+    });
+
+    var hero = $('#hero');
+    if (hero) hero.scrollIntoView({ behavior: 'smooth' });
+    setTimeout(function () {
+      document.documentElement.style.scrollSnapType = 'y mandatory';
+    }, 600);
+  });
+
+  /* ── AOS + replay-on-every-pass observer ─────────────────── */
+  if (typeof AOS !== 'undefined') {
+    AOS.init({ duration: 800, easing: 'ease', once: false, offset: 60 });
+    var aosObserver = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (entry.intersectionRatio > 0) entry.target.classList.add('aos-animate');
+        else entry.target.classList.remove('aos-animate');
+      });
+    });
+    $$('[data-aos]').forEach(function (el) { aosObserver.observe(el); });
+  }
+
+  /* ── section pager + floating quicknav ───────────────────── */
+  var sections = $$('.child');
+  var pager = $('#pager');
+  var quicknav = $('#quicknav');
+  function onScroll() {
+    var mid = window.innerHeight / 2;
+    var current = 1;
+    sections.forEach(function (sec, i) {
+      var r = sec.getBoundingClientRect();
+      if (r.top <= mid && r.bottom >= mid) current = i + 1;
+    });
+    if (pager) pager.textContent = current + '/' + sections.length;
+    if (quicknav) quicknav.classList.toggle('fade-up', opened && window.scrollY > 4);
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+
+  /* quicknav: pause snap during the jump (as the original does) */
+  if (quicknav) $$('a', quicknav).forEach(function (a) {
+    a.addEventListener('click', function () {
+      document.documentElement.style.scrollSnapType = 'none';
+      setTimeout(function () {
+        document.documentElement.style.scrollSnapType = 'y mandatory';
+      }, 1600);
+    });
+  });
+
+  /* ── countdown ───────────────────────────────────────────── */
+  var cd = { d: $('#cd-days'), h: $('#cd-hours'), m: $('#cd-mins'), s: $('#cd-secs') };
+  function tick() {
+    var diff = Math.max(0, WEDDING_DATE - new Date());
+    var sec = Math.floor(diff / 1000);
+    if (cd.d) cd.d.textContent = Math.floor(sec / 86400);
+    if (cd.h) cd.h.textContent = Math.floor(sec % 86400 / 3600);
+    if (cd.m) cd.m.textContent = Math.floor(sec % 3600 / 60);
+    if (cd.s) cd.s.textContent = sec % 60;
+  }
+  setInterval(tick, 1000); tick();
+
+  /* ── add-to-calendar (data-URI ICS, like the original) ───── */
+  function icsFor(ev) {
+    var ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'BEGIN:VEVENT',
+      'UID:' + Math.random().toString(36).slice(2) + '@johanvali',
+      'SUMMARY:' + ev.title, 'DTSTART:' + ev.start, 'DTEND:' + ev.end,
+      'LOCATION:' + ev.loc, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
+    return 'data:text/calendar;charset=utf8;base64,' + btoa(unescape(encodeURIComponent(ics)));
+  }
+  $$('[data-calendar]').forEach(function (a) {
+    var ev = EVENTS[a.getAttribute('data-calendar')];
+    if (!ev) return;
+    a.setAttribute('href', icsFor(ev));
+    a.setAttribute('download', 'johan-vali-' + a.getAttribute('data-calendar') + '.ics');
+  });
+
+  /* ── RSVP stepper ────────────────────────────────────────── */
+  var stepMinus = $('#step-minus'), stepPlus = $('#step-plus');
+  if (stepMinus) stepMinus.addEventListener('click', function () {
+    var v = parseInt(guestsInput.value, 10) || 1;
+    if (v > 1) guestsInput.value = v - 1;
+  });
+  if (stepPlus) stepPlus.addEventListener('click', function () {
+    var v = parseInt(guestsInput.value, 10) || 1;
+    var max = parseInt(guestsInput.max, 10) || 99;
+    if (v < max) guestsInput.value = v + 1;
+  });
+
+  /* ── wishes wall (seeded + localStorage, 4 per page) ─────── */
+  var wishList = $('#wish-list');
+  var wishPrev = $('#wish-prev'), wishNext = $('#wish-next');
+  var wishPage = 1;
+  function storedWishes() {
+    try { return JSON.parse(localStorage.getItem('jv-wishes') || '[]'); }
+    catch (e) { return []; }
+  }
+  function renderWishes() {
+    if (!wishList) return;
+    wishList.innerHTML = '';
+    var all = storedWishes().concat(SEED_WISHES);
+    all.forEach(function (w) {
+      var div = document.createElement('div');
+      div.className = 'wish';
+      var strong = document.createElement('strong');
+      strong.textContent = w.name;
+      var p = document.createElement('p');
+      p.textContent = w.text;
+      div.appendChild(strong); div.appendChild(p);
+      wishList.appendChild(div);
+    });
+    showWishPage(1);
+  }
+  function showWishPage(page) {
+    var items = $$('.wish', wishList);
+    var pages = Math.max(1, Math.ceil(items.length / WISHES_PER_PAGE));
+    wishPage = Math.min(Math.max(1, page), pages);
+    items.forEach(function (it, i) {
+      it.classList.toggle('show',
+        i >= (wishPage - 1) * WISHES_PER_PAGE && i < wishPage * WISHES_PER_PAGE);
+    });
+    if (wishPrev) wishPrev.hidden = wishPage <= 1;
+    if (wishNext) wishNext.hidden = wishPage >= pages;
+  }
+  if (wishPrev) wishPrev.addEventListener('click', function () { showWishPage(wishPage - 1); });
+  if (wishNext) wishNext.addEventListener('click', function () { showWishPage(wishPage + 1); });
+  renderWishes();
+
+  /* RSVP submit → save locally, add wish, thank the guest */
+  var form = $('#rsvp-form');
+  if (form) form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var name = ($('#rsvp-name').value || 'Guest').trim();
+    var text = ($('#rsvp-wishes').value || '').trim();
+    if (text) {
+      var list = storedWishes();
+      list.unshift({ name: name, text: text });
+      try { localStorage.setItem('jv-wishes', JSON.stringify(list.slice(0, 40))); } catch (err) {}
+      renderWishes();
+    }
+    var btn = $('button[type=submit]', form);
+    if (btn) {
+      btn.textContent = 'Thank you for your confirmation!';
+      btn.disabled = true;
+      setTimeout(function () {
+        btn.textContent = 'Send Confirmation';
+        btn.disabled = false;
+      }, 3200);
+    }
+    $('#rsvp-wishes').value = '';
+  });
+
+  /* ── gallery: swiper + custom lightbox ───────────────────── */
+  var galleryImages = [];
+  var wrapper = $('#gallery-swiper .swiper-wrapper');
+  if (wrapper) {
+    for (var i = 1; i <= GALLERY_COUNT; i++) {
+      var src = 'assets/img/gallery-' + (i < 10 ? '0' + i : i) + '.jpg';
+      galleryImages.push(src);
+      var slide = document.createElement('div');
+      slide.className = 'swiper-slide';
+      var frame = document.createElement('div');
+      frame.className = 'frame';
+      var img = document.createElement('img');
+      img.src = src; img.alt = 'Johan & Vali — moment ' + i; img.loading = 'lazy';
+      img.setAttribute('data-index', i - 1);
+      frame.appendChild(img); slide.appendChild(frame); wrapper.appendChild(slide);
+    }
+  }
+  if (typeof Swiper !== 'undefined' && $('#gallery-swiper')) {
+    new Swiper('#gallery-swiper', {
+      slidesPerView: 'auto',
+      centeredSlides: true,
+      spaceBetween: 14,
+      loop: true,
+      speed: 1000,
+      autoplay: { delay: 1500, disableOnInteraction: false },
+      pagination: { el: '#gallery-swiper .swiper-pagination', type: 'fraction' }
+    });
+  }
+
+  /* lightbox */
+  var lb = $('#lightbox'), lbImg = $('#lightbox-img'), lbCounter = $('#lightbox-counter');
+  var lbIndex = 0;
+  function lbShow(i) {
+    lbIndex = (i + galleryImages.length) % galleryImages.length;
+    if (lbImg) lbImg.src = galleryImages[lbIndex];
+    if (lbCounter) lbCounter.textContent = (lbIndex + 1) + ' / ' + galleryImages.length;
+  }
+  function lbOpen(i) {
+    if (!lb) return;
+    lbShow(i);
+    lb.hidden = false;
+    requestAnimationFrame(function () { lb.classList.add('open'); });
+  }
+  function lbClose() {
+    if (!lb) return;
+    lb.classList.remove('open');
+    setTimeout(function () { lb.hidden = true; }, 300);
+  }
+  document.addEventListener('click', function (e) {
+    var t = e.target;
+    if (t && t.matches && t.matches('#gallery-swiper img')) {
+      lbOpen(parseInt(t.getAttribute('data-index'), 10) || 0);
+    }
+  });
+  if (lb) {
+    $('#lightbox-close').addEventListener('click', lbClose);
+    $('#lightbox-prev').addEventListener('click', function () { lbShow(lbIndex - 1); });
+    $('#lightbox-next').addEventListener('click', function () { lbShow(lbIndex + 1); });
+    lb.addEventListener('click', function (e) { if (e.target === lb) lbClose(); });
+    document.addEventListener('keydown', function (e) {
+      if (lb.hidden) return;
+      if (e.key === 'Escape') lbClose();
+      if (e.key === 'ArrowLeft') lbShow(lbIndex - 1);
+      if (e.key === 'ArrowRight') lbShow(lbIndex + 1);
+    });
+    var touchX = 0;
+    lb.addEventListener('touchstart', function (e) { touchX = e.changedTouches[0].screenX; }, { passive: true });
+    lb.addEventListener('touchend', function (e) {
+      var dx = e.changedTouches[0].screenX - touchX;
+      if (dx < -50) lbShow(lbIndex + 1);
+      else if (dx > 50) lbShow(lbIndex - 1);
+    }, { passive: true });
+  }
+
+})();
