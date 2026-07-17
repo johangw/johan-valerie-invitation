@@ -253,8 +253,53 @@
             <label class="radio"><input type="radio" name="accommodation" value="upgrade"><span><strong>The Ritz-Carlton, Bangkok</strong><em>Upgrade at your own expense &mdash; THB 14,065.15 / night &middot; Deluxe Room &middot; <a href="https://maps.app.goo.gl/vqsSvkQEW1uSu8pt5" target="_blank" rel="noopener">view on Maps</a></em></span></label>
             <label class="radio"><input type="radio" name="accommodation" value="self"><span><strong>I&rsquo;ll arrange my own stay</strong><em>No accommodation needed</em></span></label>
           </div>
-          <label class="field-label" for="details-arrival">Arrival Date <span class="optional">(optional)</span></label>
-          <input id="details-arrival" type="date" min="2027-01-01" max="2027-01-09">
+          <div id="details-nights-row" hidden>
+            <label class="field-label" for="details-nights">Number of Nights</label>
+            <select id="details-nights">
+              <option value="">&mdash; select &mdash;</option>
+              <option value="1">1 night</option>
+              <option value="2">2 nights</option>
+              <option value="3">3 nights</option>
+              <option value="4">4 nights</option>
+              <option value="5">5 nights</option>
+              <option value="6">6 nights</option>
+              <option value="7">7 nights</option>
+              <option value="8">8 nights</option>
+              <option value="9">9 nights</option>
+              <option value="10">10 nights</option>
+            </select>
+          </div>
+          <label class="field-label" for="details-arrival">Arrival <span class="optional">(optional &mdash; date &amp; hour)</span></label>
+          <div class="arrival-row">
+            <input id="details-arrival" type="date" min="2027-01-01" max="2027-01-09">
+            <select id="details-arrival-hour" aria-label="Arrival hour">
+              <option value="">&mdash; hour &mdash;</option>
+              <option value="0">00:00</option>
+              <option value="1">01:00</option>
+              <option value="2">02:00</option>
+              <option value="3">03:00</option>
+              <option value="4">04:00</option>
+              <option value="5">05:00</option>
+              <option value="6">06:00</option>
+              <option value="7">07:00</option>
+              <option value="8">08:00</option>
+              <option value="9">09:00</option>
+              <option value="10">10:00</option>
+              <option value="11">11:00</option>
+              <option value="12">12:00</option>
+              <option value="13">13:00</option>
+              <option value="14">14:00</option>
+              <option value="15">15:00</option>
+              <option value="16">16:00</option>
+              <option value="17">17:00</option>
+              <option value="18">18:00</option>
+              <option value="19">19:00</option>
+              <option value="20">20:00</option>
+              <option value="21">21:00</option>
+              <option value="22">22:00</option>
+              <option value="23">23:00</option>
+            </select>
+          </div>
           <div class="notes-card">
             <p class="micro">GOOD TO KNOW</p>
             <ul>

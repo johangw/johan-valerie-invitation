@@ -342,7 +342,7 @@
     }
     if (scroll) scrollToDetails();
   }
-  function showDetailsDone(accomCode, arrival) {
+  function showDetailsDone(accomCode, arrival, nights) {
     var wrap = $('#details-form-wrap'), done = $('#details-done');
     if (wrap) wrap.hidden = true;
     if (done) done.hidden = false;
@@ -352,10 +352,26 @@
       self: 'Self-arranged stay'
     };
     var parts = [];
-    if (labels[accomCode]) parts.push(labels[accomCode]);
+    var n = parseInt(nights, 10);
+    if (labels[accomCode]) parts.push(labels[accomCode] + (n ? ' — ' + n + ' night' + (n > 1 ? 's' : '') : ''));
     if (arrival) parts.push('arriving ' + arrival);
     var sum = $('#details-summary');
     if (sum) sum.textContent = parts.join('  ·  ');
+  }
+
+  /* nights are asked only when we (or the Ritz) host the stay */
+  var nightsRow = $('#details-nights-row');
+  var nightsSel = $('#details-nights');
+  function syncNightsRow() {
+    var chosen = detailsForm && detailsForm.querySelector('input[name=accommodation]:checked');
+    var needsNights = !!(chosen && chosen.value !== 'self');
+    if (nightsRow) nightsRow.hidden = !needsNights;
+    if (!needsNights && nightsSel) nightsSel.value = '';
+  }
+  if (detailsForm) {
+    $$('input[name=accommodation]', detailsForm).forEach(function (r) {
+      r.addEventListener('change', syncNightsRow);
+    });
   }
 
   /* stage 1: attendance */
@@ -407,7 +423,7 @@
     }
   });
 
-  /* stage 2: guest details (accommodation + arrival) */
+  /* stage 2: guest details (accommodation + nights + arrival) */
   if (detailsForm) detailsForm.addEventListener('submit', function (e) {
     e.preventDefault();
     var chosen = detailsForm.querySelector('input[name=accommodation]:checked');
@@ -416,23 +432,42 @@
       if (note) note.textContent = 'Please choose an accommodation option first';
       return;
     }
+    var nights = (nightsSel && nightsSel.value) || '';
+    if (chosen.value !== 'self' && !nights) {
+      if (note) note.textContent = 'Please select your number of nights';
+      if (nightsSel) nightsSel.focus();
+      return;
+    }
     var arrival = ($('#details-arrival') && $('#details-arrival').value) || '';
+    var hourSel = $('#details-arrival-hour');
+    var hour = (hourSel && hourSel.value) || '';
+    if (arrival && hour === '') {
+      if (note) note.textContent = 'Please pick your arrival hour too';
+      if (hourSel) hourSel.focus();
+      return;
+    }
+    if (!arrival && hour !== '') {
+      if (note) note.textContent = 'Please pick your arrival date too';
+      return;
+    }
+    var arrivalFull = arrival ? arrival + (hour !== '' ? ' ' + ('0' + hour).slice(-2) + ':00' : '') : '';
     var btn = $('button[type=submit]', detailsForm);
     var name = ($('#rsvp-name').value || '').trim();
 
     if (API_URL) {
       if (btn) { btn.textContent = 'Saving…'; btn.disabled = true; }
       postApi({ action: 'details', key: guestKey || name,
-                accommodation: chosen.value, arrival: arrival })
+                accommodation: chosen.value, nights: nights,
+                arrival: arrival, arrivalHour: hour })
         .then(function (d) {
-          if (d && d.ok) showDetailsDone(chosen.value, arrival);
+          if (d && d.ok) showDetailsDone(chosen.value, arrivalFull, nights);
           else throw new Error((d && d.error) || 'failed');
         })
         .catch(function () {
           if (btn) { btn.textContent = 'Couldn’t save — tap to retry'; btn.disabled = false; }
         });
     } else {
-      showDetailsDone(chosen.value, arrival);
+      showDetailsDone(chosen.value, arrivalFull, nights);
     }
   });
 
@@ -467,8 +502,17 @@
             var acc = detailsForm.querySelector('input[name=accommodation][value="' + d.accommodation + '"]');
             if (acc) acc.checked = true;
           }
-          if (d.arrival && $('#details-arrival')) $('#details-arrival').value = d.arrival;
-          if (d.detailsDone) showDetailsDone(d.accommodation, d.arrival);
+          syncNightsRow();
+          if (d.nights && nightsSel) nightsSel.value = String(parseInt(d.nights, 10) || '');
+          if (d.arrival && $('#details-arrival')) {
+            var am = /^(\d{4}-\d{2}-\d{2})(?:\s+(\d{1,2}):\d{2})?/.exec(String(d.arrival));
+            if (am) {
+              $('#details-arrival').value = am[1];
+              var hs = $('#details-arrival-hour');
+              if (hs && am[2] !== undefined) hs.value = String(parseInt(am[2], 10));
+            }
+          }
+          if (d.detailsDone) showDetailsDone(d.accommodation, d.arrival, d.nights);
         }
       })
       .catch(function () {});

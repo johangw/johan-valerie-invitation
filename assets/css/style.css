@@ -302,6 +302,9 @@ h3.serif{ font-size:27px; line-height:1.2; }
 #rsvp-hp{ position:absolute !important; left:-9999px !important; width:1px; height:1px; opacity:0; }
 
 /* guest details (stage 2) */
+/* the form is the tallest content in the deck — if a short screen can't
+   fit it, let it scroll inside its snapped section instead of clipping */
+#details .content{ max-height:100%; overflow-y:auto; scrollbar-width:thin; }
 #details h2{ margin-bottom:6px; }
 .radio-col{ display:flex; flex-direction:column; gap:8px; }
 .radio-col .radio input + span{
@@ -316,12 +319,16 @@ h3.serif{ font-size:27px; line-height:1.2; }
 .radio-col .stars{ color:#c4c4c4; font-size:11px; letter-spacing:2px; vertical-align:1px; white-space:nowrap; }
 .radio-col .radio span em a{ color:var(--muted); text-decoration:underline; text-underline-offset:2px; }
 .profile h2.profile-name{ font-size:34px; }
-#details-form input[type=date]{
+#details-form input[type=date], #details-form select{
   width:100%; font-family:'Inter',sans-serif; font-size:14px; font-weight:300;
   color:var(--ink); background:transparent;
   border:1px solid var(--hairline); border-radius:2px; padding:11px 14px; outline:none;
 }
-#details-form input[type=date]:focus{ border-color:var(--ink-2); }
+#details-form input[type=date]:focus, #details-form select:focus{ border-color:var(--ink-2); }
+#details-form select option{ color:var(--ink); background:var(--white); }
+.arrival-row{ display:flex; gap:8px; }
+.arrival-row input[type=date]{ flex:1 1 58%; min-width:0; }
+.arrival-row select{ flex:1 1 42%; min-width:0; }
 .optional{ text-transform:none; letter-spacing:.4px; color:var(--muted); }
 .notes-card{
   border:1px solid var(--hairline); border-radius:2px; border-left:2px solid var(--cream);
@@ -416,6 +423,19 @@ h3.serif{ font-size:27px; line-height:1.2; }
   .event-card{ padding:14px 16px 13px; margin-top:10px; }
   .event-card .body{ margin-bottom:10px; }
   #events .ovo{ margin-bottom:8px; }
+
+  /* the details form is even taller — compact it in step */
+  #details .content{ padding:16px 26px; }
+  #details .ovo{ margin-bottom:6px; }
+  #details h2{ font-size:30px; margin-bottom:2px; }
+  #details-form .field-label{ margin:10px 0 4px; }
+  .radio-col{ gap:6px; }
+  .radio-col .radio input + span{ padding:9px 12px; }
+  #details-form input[type=date], #details-form select{ padding:8px 12px; }
+  .notes-card{ padding:10px 12px; margin-top:10px; }
+  .notes-card .micro{ margin-bottom:4px; }
+  .notes-card li{ font-size:11.5px; line-height:1.65; }
+  #details-form .btn.solid{ padding:9px 16px; margin-top:12px; }
 }
 
 /* small phones: tighten display sizes so 100vh sections never clip */
