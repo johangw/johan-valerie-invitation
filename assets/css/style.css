@@ -348,6 +348,8 @@ h3.serif{ font-size:27px; line-height:1.2; }
 
 /* information step (dress code + adults-only note, before guest details) */
 #info .content{ max-height:100%; overflow-y:auto; scrollbar-width:thin; }
+/* lift each step's button + note clear of the fixed quicknav / pager */
+#info .content, #details .content{ padding-bottom:80px; }
 #info h2{ margin-bottom:6px; }
 .info-card{
   border:1px solid var(--hairline); border-radius:2px; border-left:2px solid var(--cream);
@@ -458,8 +460,8 @@ h3.serif{ font-size:27px; line-height:1.2; }
   .event-card .body{ margin-bottom:10px; }
   #events .ovo{ margin-bottom:8px; }
 
-  /* the details form is even taller — compact it in step */
-  #details .content{ padding:16px 26px; }
+  /* the details form is even taller — compact it in step (keep bottom clearance) */
+  #details .content, #info .content{ padding:16px 26px 68px; }
   #details .ovo{ margin-bottom:6px; }
   #details h2{ font-size:30px; margin-bottom:2px; }
   #details-form .field-label{ margin:10px 0 4px; }
