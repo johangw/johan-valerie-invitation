@@ -335,6 +335,7 @@ h3.serif{ font-size:27px; line-height:1.2; }
 .arrival-row input[type=date]{ flex:1 1 58%; min-width:0; }
 .arrival-row select{ flex:1 1 42%; min-width:0; }
 .optional{ text-transform:none; letter-spacing:.4px; color:var(--muted); }
+.optional.req{ color:var(--ink-2); font-weight:500; }
 .notes-card{
   border:1px solid var(--hairline); border-radius:2px; border-left:2px solid var(--cream);
   padding:14px 16px; margin-top:18px; text-align:left;

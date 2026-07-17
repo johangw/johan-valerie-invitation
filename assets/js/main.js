@@ -387,9 +387,20 @@
   var nightsSel = $('#details-nights');
   var nightsNote = $('#details-nights-note');
   function updateNightsNote() {
-    if (!nightsNote) return;
     var chosen = detailsForm && detailsForm.querySelector('input[name=accommodation]:checked');
     var n = parseInt(nightsSel && nightsSel.value, 10) || 0;
+    // arrival turns from optional to required once the stay runs past the 2 hosted nights
+    var reqSpan = $('#details-arrival-req');
+    if (reqSpan) {
+      if (n > HOSTED_NIGHTS) {
+        reqSpan.textContent = '(required — date & hour)';
+        reqSpan.classList.add('req');
+      } else {
+        reqSpan.innerHTML = '(optional &mdash; date &amp; hour)';
+        reqSpan.classList.remove('req');
+      }
+    }
+    if (!nightsNote) return;
     nightsNote.className = 'nights-note';
     if (!chosen || chosen.value === 'self') { nightsNote.textContent = ''; return; }
     if (chosen.value === 'provided') {
@@ -498,6 +509,17 @@
     var arrival = ($('#details-arrival') && $('#details-arrival').value) || '';
     var hourSel = $('#details-arrival-hour');
     var hour = (hourSel && hourSel.value) || '';
+    var arrivalRequired = (parseInt(nights, 10) || 0) > HOSTED_NIGHTS;   // >2 nights → exact arrival needed
+    if (arrivalRequired && !arrival) {
+      if (note) note.textContent = 'Staying more than 2 nights — please add your arrival date';
+      if ($('#details-arrival')) $('#details-arrival').focus();
+      return;
+    }
+    if (arrivalRequired && hour === '') {
+      if (note) note.textContent = 'Staying more than 2 nights — please add your arrival hour';
+      if (hourSel) hourSel.focus();
+      return;
+    }
     if (arrival && hour === '') {
       if (note) note.textContent = 'Please pick your arrival hour too';
       if (hourSel) hourSel.focus();
