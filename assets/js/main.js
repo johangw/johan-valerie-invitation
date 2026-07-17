@@ -1,5 +1,5 @@
 /* ═══════════════════════════════════════════════════════════════
-   Johan & Vali — placeholder invitation
+   Johan & Valerie — placeholder invitation
    Motion study: preloader strobe, split-text loops, blur cover
    exit, scroll-snap deck, audio system, gallery + lightbox
    ═══════════════════════════════════════════════════════════════ */
@@ -12,9 +12,9 @@
   /* ── config ──────────────────────────────────────────────── */
   var WEDDING_DATE = new Date('2027-01-09T15:00:00+07:00');   // 3 PM, Bangkok (ICT)
   var EVENTS = {
-    ceremony:  { title: 'Holy Matrimony — Johan & Vali', start: '20270109T080000Z', end: '20270109T093000Z', loc: 'La Chapelle Bangkok — Jardin de Juliet' },
-    cocktail:  { title: 'Cocktail Party — Johan & Vali', start: '20270109T100000Z', end: '20270109T110000Z', loc: 'La Chapelle Bangkok' },
-    reception: { title: 'Wedding Reception — Johan & Vali', start: '20270109T110000Z', end: '20270109T150000Z', loc: 'La Chapelle Bangkok — Saint Hall' }
+    ceremony:  { title: 'Holy Matrimony — Johan & Valerie', start: '20270109T080000Z', end: '20270109T093000Z', loc: 'La Chapelle Bangkok — Jardin de Juliet' },
+    cocktail:  { title: 'Cocktail Party — Johan & Valerie', start: '20270109T100000Z', end: '20270109T110000Z', loc: 'La Chapelle Bangkok' },
+    reception: { title: 'Wedding Reception — Johan & Valerie', start: '20270109T110000Z', end: '20270109T150000Z', loc: 'La Chapelle Bangkok — Saint Hall' }
   };
   var GALLERY_COUNT = 18;
   var WISHES_PER_PAGE = 4;
@@ -234,7 +234,7 @@
   /* ── add-to-calendar (data-URI ICS, like the original) ───── */
   function icsFor(ev) {
     var ics = ['BEGIN:VCALENDAR', 'VERSION:2.0', 'BEGIN:VEVENT',
-      'UID:' + Math.random().toString(36).slice(2) + '@johanvali',
+      'UID:' + Math.random().toString(36).slice(2) + '@johanvalerie',
       'SUMMARY:' + ev.title, 'DTSTART:' + ev.start, 'DTEND:' + ev.end,
       'LOCATION:' + ev.loc, 'END:VEVENT', 'END:VCALENDAR'].join('\r\n');
     return 'data:text/calendar;charset=utf8;base64,' + btoa(unescape(encodeURIComponent(ics)));
@@ -243,7 +243,7 @@
     var ev = EVENTS[a.getAttribute('data-calendar')];
     if (!ev) return;
     a.setAttribute('href', icsFor(ev));
-    a.setAttribute('download', 'johan-vali-' + a.getAttribute('data-calendar') + '.ics');
+    a.setAttribute('download', 'johan-valerie-' + a.getAttribute('data-calendar') + '.ics');
   });
 
   /* ── RSVP stepper ────────────────────────────────────────── */
@@ -530,7 +530,7 @@
       var frame = document.createElement('div');
       frame.className = 'frame';
       var img = document.createElement('img');
-      img.src = src; img.alt = 'Johan & Vali — moment ' + i; img.loading = 'lazy';
+      img.src = src; img.alt = 'Johan & Valerie — moment ' + i; img.loading = 'lazy';
       img.setAttribute('data-index', i - 1);
       frame.appendChild(img); slide.appendChild(frame); wrapper.appendChild(slide);
     }
