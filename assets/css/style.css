@@ -411,6 +411,13 @@ h3.serif{ font-size:27px; line-height:1.2; }
   #quicknav.fade-up{ transform:translateX(50%) translateY(0); }
 }
 
+/* three event cards need ~710px at full size — trim them a touch earlier */
+@media (max-height:760px){
+  .event-card{ padding:14px 16px 13px; margin-top:10px; }
+  .event-card .body{ margin-bottom:10px; }
+  #events .ovo{ margin-bottom:8px; }
+}
+
 /* small phones: tighten display sizes so 100vh sections never clip */
 @media (max-height:700px){
   .names{ font-size:44px; }
@@ -421,5 +428,19 @@ h3.serif{ font-size:27px; line-height:1.2; }
   #rsvp-form textarea{ height:52px; }
   .field-label{ margin:10px 0 4px; }
   #rsvp h2{ margin-bottom:12px; }
-  .event-card{ padding:16px 16px 14px; margin-top:10px; }
+  .event-card{ padding:13px 14px 12px; margin-top:9px; }
+  .event-card .micro{ margin-bottom:5px; }
+  .event-card .body{ margin-bottom:9px; font-size:13px; line-height:1.55; }
+  #events .content{ padding:20px 26px; }
+  #events .ovo{ margin-bottom:6px; }
+  #events .btn{ padding:8px 13px; }
+}
+
+/* very short viewports (SE-class phones): last squeeze for 3 cards */
+@media (max-height:600px){
+  .event-card{ padding:10px 12px 9px; margin-top:8px; }
+  .event-card h3{ font-size:21px; }
+  .event-card .body{ font-size:12px; margin-bottom:7px; }
+  #events .content{ padding:14px 26px; }
+  #events .btn{ padding:7px 11px; }
 }

@@ -10,9 +10,10 @@
   var $$ = function (s, c) { return Array.prototype.slice.call((c || document).querySelectorAll(s)); };
 
   /* ── config ──────────────────────────────────────────────── */
-  var WEDDING_DATE = new Date('2027-01-09T16:00:00+07:00');   // 4 PM, Bangkok (ICT)
+  var WEDDING_DATE = new Date('2027-01-09T15:00:00+07:00');   // 3 PM, Bangkok (ICT)
   var EVENTS = {
-    ceremony:  { title: 'Holy Matrimony — Johan & Vali', start: '20270109T090000Z', end: '20270109T103000Z', loc: 'La Chapelle Bangkok — Jardin de Juliet' },
+    ceremony:  { title: 'Holy Matrimony — Johan & Vali', start: '20270109T080000Z', end: '20270109T093000Z', loc: 'La Chapelle Bangkok — Jardin de Juliet' },
+    cocktail:  { title: 'Cocktail Party — Johan & Vali', start: '20270109T100000Z', end: '20270109T110000Z', loc: 'La Chapelle Bangkok' },
     reception: { title: 'Wedding Reception — Johan & Vali', start: '20270109T110000Z', end: '20270109T150000Z', loc: 'La Chapelle Bangkok — Saint Hall' }
   };
   var GALLERY_COUNT = 18;
@@ -49,6 +50,12 @@
     guestsInput.max = maxGuests;
     var lbl = $('#guest-count-label');
     if (lbl) lbl.textContent = 'No of Guest (Max ' + maxGuests + ')';
+  }
+
+  /* holy matrimony is invitation-only: card shows only with &hm=1 */
+  if (params.get('hm') !== '1') {
+    var holmatCard = $('#event-holmat');
+    if (holmatCard) holmatCard.hidden = true;
   }
 
   /* ── audio system ────────────────────────────────────────── */
