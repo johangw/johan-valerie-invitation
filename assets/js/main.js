@@ -324,23 +324,43 @@
       .then(function (r) { return r.json(); });
   }
 
+  var infoSection = $('#info');
   var detailsSection = $('#details');
   var detailsForm = $('#details-form');
 
-  function scrollToDetails() {
+  // Asawin hosts up to 2 nights; extra nights are paid to the hotel.
+  var HOSTED_NIGHTS = 2, ASAWIN_EXTRA = 2200, RITZ_RATE = 14065.15;
+  function fmtTHB(n) {
+    return 'THB ' + n.toLocaleString('en-US', {
+      minimumFractionDigits: (n % 1 ? 2 : 0), maximumFractionDigits: 2
+    });
+  }
+
+  function scrollToSection(el) {
+    if (!el) return;
     document.documentElement.style.scrollSnapType = 'none';
-    detailsSection.scrollIntoView({ behavior: 'smooth' });
+    el.scrollIntoView({ behavior: 'smooth' });
     setTimeout(function () {
       document.documentElement.style.scrollSnapType = 'y mandatory';
     }, 1600);
   }
+  function unlockInfo(scroll) {
+    if (!infoSection) return;
+    if (infoSection.hidden) { infoSection.hidden = false; onScroll(); }
+    if (scroll) scrollToSection(infoSection);
+  }
   function unlockDetails(scroll) {
     if (!detailsSection) return;
-    if (detailsSection.hidden) {
-      detailsSection.hidden = false;
-      onScroll();
-    }
-    if (scroll) scrollToDetails();
+    if (detailsSection.hidden) { detailsSection.hidden = false; onScroll(); }
+    if (scroll) scrollToSection(detailsSection);
+  }
+  var infoContinue = $('#info-continue');
+  if (infoContinue) infoContinue.addEventListener('click', function () { unlockDetails(true); });
+  function nightsCost(accomCode, nights) {
+    var n = parseInt(nights, 10) || 0;
+    if (accomCode === 'provided' && n > HOSTED_NIGHTS) return (n - HOSTED_NIGHTS) * ASAWIN_EXTRA;
+    if (accomCode === 'upgrade' && n > 0) return n * RITZ_RATE;
+    return 0;
   }
   function showDetailsDone(accomCode, arrival, nights) {
     var wrap = $('#details-form-wrap'), done = $('#details-done');
@@ -354,6 +374,9 @@
     var parts = [];
     var n = parseInt(nights, 10);
     if (labels[accomCode]) parts.push(labels[accomCode] + (n ? ' — ' + n + ' night' + (n > 1 ? 's' : '') : ''));
+    var cost = nightsCost(accomCode, nights);
+    if (cost) parts.push((accomCode === 'provided' ? 'extra ' : '') + fmtTHB(cost) +
+                         ' to ' + (accomCode === 'provided' ? 'Asawin' : 'the Ritz-Carlton'));
     if (arrival) parts.push('arriving ' + arrival);
     var sum = $('#details-summary');
     if (sum) sum.textContent = parts.join('  ·  ');
@@ -362,17 +385,51 @@
   /* nights are asked only when we (or the Ritz) host the stay */
   var nightsRow = $('#details-nights-row');
   var nightsSel = $('#details-nights');
+  var nightsNote = $('#details-nights-note');
+  function updateNightsNote() {
+    if (!nightsNote) return;
+    var chosen = detailsForm && detailsForm.querySelector('input[name=accommodation]:checked');
+    var n = parseInt(nightsSel && nightsSel.value, 10) || 0;
+    nightsNote.className = 'nights-note';
+    if (!chosen || chosen.value === 'self') { nightsNote.textContent = ''; return; }
+    if (chosen.value === 'provided') {
+      if (!n) {
+        nightsNote.textContent = 'We host up to 2 nights (Deluxe). Extra nights are THB 2,200 each, paid to Asawin.';
+      } else if (n <= HOSTED_NIGHTS) {
+        nightsNote.classList.add('ok');
+        nightsNote.textContent = n + ' night' + (n > 1 ? 's' : '') + ' — fully hosted by us' +
+          (n < HOSTED_NIGHTS ? ' (up to 2 nights are on us).' : ', our gift to you.');
+      } else {
+        var extra = n - HOSTED_NIGHTS;
+        nightsNote.classList.add('pay');
+        nightsNote.innerHTML = 'First 2 nights hosted by us. <strong>' + extra + ' extra night' +
+          (extra > 1 ? 's' : '') + ' &times; THB 2,200 = ' + fmtTHB(extra * ASAWIN_EXTRA) +
+          '</strong>, paid directly to Asawin.';
+      }
+    } else if (chosen.value === 'upgrade') {
+      if (!n) {
+        nightsNote.textContent = 'Charged at THB 14,065.15 / night (Deluxe), paid to the hotel.';
+      } else {
+        nightsNote.classList.add('pay');
+        nightsNote.innerHTML = '<strong>' + n + ' night' + (n > 1 ? 's' : '') +
+          ' &times; THB 14,065.15 = ' + fmtTHB(n * RITZ_RATE) + '</strong>, paid directly to The Ritz-Carlton.';
+      }
+    }
+  }
   function syncNightsRow() {
     var chosen = detailsForm && detailsForm.querySelector('input[name=accommodation]:checked');
     var needsNights = !!(chosen && chosen.value !== 'self');
     if (nightsRow) nightsRow.hidden = !needsNights;
-    if (!needsNights && nightsSel) nightsSel.value = '';
+    if (!needsNights) { if (nightsSel) nightsSel.value = ''; }
+    else if (nightsSel && !nightsSel.value) { nightsSel.value = '2'; }   // default: the 2 nights we host
+    updateNightsNote();
   }
   if (detailsForm) {
     $$('input[name=accommodation]', detailsForm).forEach(function (r) {
       r.addEventListener('change', syncNightsRow);
     });
   }
+  if (nightsSel) nightsSel.addEventListener('change', updateNightsNote);
 
   /* stage 1: attendance */
   var form = $('#rsvp-form');
@@ -390,11 +447,11 @@
     function afterOk() {
       var note = $('#rsvp-note');
       if (att === 'yes') {
-        if (btn) { btn.textContent = 'Confirmed ✓ — one more step below'; btn.disabled = true; }
+        if (btn) { btn.textContent = 'Confirmed ✓ — a few notes below'; btn.disabled = true; }
         if (note) note.textContent = text
           ? 'Your wish will appear on the wall once approved'
-          : 'Please complete your guest details below';
-        unlockDetails(true);
+          : 'Please read the notes below, then complete your details';
+        unlockInfo(true);
       } else {
         if (btn) { btn.textContent = 'Thank you — we’ll miss you!'; btn.disabled = true; }
         if (note && text) note.textContent = 'Your wish will appear on the wall once approved';
@@ -497,6 +554,7 @@
         if (radio) radio.checked = true;
         if (d.wishes && $('#rsvp-wishes')) $('#rsvp-wishes').value = d.wishes;
         if (isYes) {
+          unlockInfo(false);
           unlockDetails(false);
           if (d.accommodation && detailsForm) {
             var acc = detailsForm.querySelector('input[name=accommodation][value="' + d.accommodation + '"]');
@@ -504,6 +562,7 @@
           }
           syncNightsRow();
           if (d.nights && nightsSel) nightsSel.value = String(parseInt(d.nights, 10) || '');
+          updateNightsNote();
           if (d.arrival && $('#details-arrival')) {
             var am = /^(\d{4}-\d{2}-\d{2})(?:\s+(\d{1,2}):\d{2})?/.exec(String(d.arrival));
             if (am) {

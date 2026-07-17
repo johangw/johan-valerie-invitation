@@ -240,7 +240,32 @@
     </div>
   </section>
 
-  <!-- 10b · GUEST DETAILS (unlocks after an "attending" confirmation) -->
+  <!-- 10a · INFORMATION (unlocks after an "attending" confirmation) -->
+  <section class="child" id="info" hidden>
+    <div class="content" data-aos="fade">
+      <p class="ovo">BEFORE THE CELEBRATION</p>
+      <h2 class="serif">Good to Know</h2>
+
+      <div class="info-card">
+        <p class="micro">DRESS CODE</p>
+        <p class="body">Classy dress &mdash; black &amp; soft colours.</p>
+        <figure class="dress-figure">
+          <img src="assets/img/dress-code.png" alt="Dress code inspiration: a black suit, soft-colour gowns, and a smart neutral look" loading="lazy">
+          <figcaption class="dress-caption">A little inspiration for the day</figcaption>
+        </figure>
+      </div>
+
+      <div class="info-card">
+        <p class="micro">AN ADULTS-ONLY CELEBRATION</p>
+        <p class="body">With all our love, we&rsquo;ve chosen to make our wedding an adults-only celebration. As much as we adore your little ones, our venue can only welcome a limited number of guests &mdash; and we&rsquo;d love for everyone to relax and unwind for the evening. We hope this note gives you plenty of time to arrange care, and we can&rsquo;t wait to celebrate with you.</p>
+      </div>
+
+      <button type="button" class="btn solid" id="info-continue">Continue to Guest Details</button>
+      <p class="micro muted center">One more short step to complete your RSVP</p>
+    </div>
+  </section>
+
+  <!-- 10b · GUEST DETAILS (unlocks after the information step) -->
   <section class="child" id="details" hidden>
     <div class="content" data-aos="fade">
       <div id="details-form-wrap">
@@ -250,7 +275,7 @@
           <label class="field-label">Accommodation</label>
           <div class="radio-col">
             <label class="radio"><input type="radio" name="accommodation" value="provided"><span><strong>Asawin Grand Convention Hotel <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></strong><em>Our treat &mdash; <a href="https://maps.app.goo.gl/W8K9ERwkXiMMZL7E8" target="_blank" rel="noopener">view on Maps</a></em></span></label>
-            <label class="radio"><input type="radio" name="accommodation" value="upgrade"><span><strong>The Ritz-Carlton, Bangkok</strong><em>Upgrade at your own expense &mdash; THB 14,065.15 / night &middot; Deluxe Room &middot; <a href="https://maps.app.goo.gl/vqsSvkQEW1uSu8pt5" target="_blank" rel="noopener">view on Maps</a></em></span></label>
+            <label class="radio"><input type="radio" name="accommodation" value="upgrade"><span><strong>The Ritz-Carlton, Bangkok <span class="stars" aria-label="5 stars">&#9733;&#9733;&#9733;&#9733;&#9733;</span></strong><em>Upgrade at your own expense &mdash; THB 14,065.15 / night &middot; Deluxe Room &middot; <a href="https://maps.app.goo.gl/vqsSvkQEW1uSu8pt5" target="_blank" rel="noopener">view on Maps</a></em></span></label>
             <label class="radio"><input type="radio" name="accommodation" value="self"><span><strong>I&rsquo;ll arrange my own stay</strong><em>No accommodation needed</em></span></label>
           </div>
           <div id="details-nights-row" hidden>
@@ -264,10 +289,8 @@
               <option value="5">5 nights</option>
               <option value="6">6 nights</option>
               <option value="7">7 nights</option>
-              <option value="8">8 nights</option>
-              <option value="9">9 nights</option>
-              <option value="10">10 nights</option>
             </select>
+            <p class="nights-note" id="details-nights-note"></p>
           </div>
           <label class="field-label" for="details-arrival">Arrival <span class="optional">(optional &mdash; date &amp; hour)</span></label>
           <div class="arrival-row">
@@ -301,10 +324,9 @@
             </select>
           </div>
           <div class="notes-card">
-            <p class="micro">GOOD TO KNOW</p>
+            <p class="micro">QUESTIONS?</p>
             <ul>
-              <li><strong>Dress code</strong> &mdash; Classy dress, black and soft colours</li>
-              <li><strong>Contact</strong> &mdash; WhatsApp +__ ____ ____ ____</li>
+              <li><strong>Contact us</strong> &mdash; WhatsApp +__ ____ ____ ____</li>
             </ul>
           </div>
           <button type="submit" class="btn solid">Complete RSVP</button>

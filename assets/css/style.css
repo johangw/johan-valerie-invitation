@@ -346,6 +346,29 @@ h3.serif{ font-size:27px; line-height:1.2; }
 #details-done .done-line{ font-size:21px; line-height:1.55; margin:8px 0 4px; }
 #details-summary{ color:var(--ink-2); }
 
+/* information step (dress code + adults-only note, before guest details) */
+#info .content{ max-height:100%; overflow-y:auto; scrollbar-width:thin; }
+#info h2{ margin-bottom:6px; }
+.info-card{
+  border:1px solid var(--hairline); border-radius:2px; border-left:2px solid var(--cream);
+  padding:16px 16px 18px; margin-top:16px; text-align:left;
+}
+.info-card .micro{ color:var(--muted); margin-bottom:8px; }
+.info-card .body{ font-size:13.5px; line-height:1.7; color:var(--ink-2); }
+.info-card .body strong{ color:var(--ink); }
+.dress-figure{ margin:12px 0 0; }
+.dress-figure img{ display:block; width:100%; max-width:300px; margin:0 auto; height:auto; }
+.dress-caption{
+  text-align:center; font-size:10px; letter-spacing:1.6px; text-transform:uppercase;
+  color:var(--muted); margin-top:10px;
+}
+#info .btn.solid{ margin-top:20px; }
+
+/* nights cost note (dynamic, in guest details) */
+.nights-note{ font-size:12px; line-height:1.55; margin-top:8px; color:var(--ink-2); }
+.nights-note.ok{ color:#5f6b52; }        /* fully hosted — soft olive */
+.nights-note.pay strong{ color:var(--ink); font-weight:600; }
+
 /* wishes — sits over the video backdrop, so everything reads light */
 #wishes h2{ margin-bottom:20px; color:var(--white); }
 #wishes .ovo{ color:var(--white); }
