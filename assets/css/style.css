@@ -346,19 +346,25 @@ h3.serif{ font-size:27px; line-height:1.2; }
 #details-done .done-line{ font-size:21px; line-height:1.55; margin:8px 0 4px; }
 #details-summary{ color:var(--ink-2); }
 
-/* wishes */
-#wishes h2{ margin-bottom:20px; }
+/* wishes — sits over the video backdrop, so everything reads light */
+#wishes h2{ margin-bottom:20px; color:var(--white); }
+#wishes .ovo{ color:var(--white); }
+#wishes .body.muted{ color:rgba(255,255,255,.72); }
 #wish-list{ text-align:left; min-height:264px; }
 .wish{
-  border:1px solid var(--hairline); border-radius:2px;
+  border:1px solid rgba(255,255,255,.22); border-radius:2px;
   padding:12px 14px; margin-bottom:8px;
+  background:rgba(18,18,18,.34);
+  backdrop-filter:blur(8px); -webkit-backdrop-filter:blur(8px);
   display:none;
 }
 .wish.show{ display:block; animation:wishIn .4s ease; }
 @keyframes wishIn{ from{ opacity:0; transform:translateY(8px); } to{ opacity:1; transform:none; } }
-.wish strong{ font-size:11px; letter-spacing:1px; text-transform:uppercase; display:block; margin-bottom:4px; }
-.wish p{ font-size:13px; font-weight:300; line-height:1.6; color:var(--ink-2); }
+.wish strong{ font-size:11px; letter-spacing:1px; text-transform:uppercase; display:block; margin-bottom:4px; color:var(--white); }
+.wish p{ font-size:13px; font-weight:300; line-height:1.6; color:rgba(255,255,255,.85); }
 .wish-nav{ display:flex; justify-content:center; gap:8px; margin-top:14px; }
+#wishes .btn.ghost{ color:var(--white); border-color:rgba(255,255,255,.5); }
+#wishes .btn.ghost:hover{ background:rgba(255,255,255,.14); color:var(--white); }
 
 /* gallery */
 #gallery-swiper{ width:100%; margin-top:6px; }
