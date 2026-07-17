@@ -215,15 +215,20 @@ h3.serif{ font-size:27px; line-height:1.2; }
 .verse-text{ font-size:21px; line-height:1.65; margin-top:10px; }
 
 /* profiles */
-.profile{ flex-direction:column; gap:0; }
-.profile-photo{
-  width:min(62vw,250px); aspect-ratio:2/3; overflow:hidden;
-  border:1px solid var(--hairline); padding:8px; background:var(--white);
+/* profiles — full-bleed portrait, text anchored low over a gradient */
+.profile{ flex-direction:column; justify-content:flex-end; gap:0; }
+.profile-scrim{
+  position:absolute; inset:0; z-index:1;
+  background:linear-gradient(180deg,
+    rgba(16,16,16,.12) 0%,
+    rgba(16,16,16,0) 30%,
+    rgba(16,16,16,.52) 76%,
+    rgba(16,16,16,.74) 100%);
 }
-.profile-photo img{ width:100%; height:100%; object-fit:cover; }
-.profile .content{ padding-top:22px; }
+.profile .content{ padding-bottom:58px; }
 .profile h2{ font-size:44px; text-transform:none; margin:2px 0 10px; }
 .profile .micro{ margin-bottom:6px; }
+.profile .body{ font-weight:300; }
 
 /* story */
 .story-text{ font-size:18px; line-height:1.7; margin-top:14px; }
@@ -318,7 +323,7 @@ h3.serif{ font-size:27px; line-height:1.2; }
 .radio-col .radio input:checked + span{ border-color:var(--ink); background:rgba(229,224,216,.35); }
 .radio-col .stars{ color:#c4c4c4; font-size:11px; letter-spacing:2px; vertical-align:1px; white-space:nowrap; }
 .radio-col .radio span em a{ color:var(--muted); text-decoration:underline; text-underline-offset:2px; }
-.profile h2.profile-name{ font-size:34px; }
+.profile h2.profile-name{ font-size:33px; line-height:1.1; }
 #details-form input[type=date], #details-form select{
   width:100%; font-family:'Inter',sans-serif; font-size:14px; font-weight:300;
   color:var(--ink); background:transparent;
@@ -442,7 +447,7 @@ h3.serif{ font-size:27px; line-height:1.2; }
 @media (max-height:700px){
   .names{ font-size:44px; }
   h2.serif{ font-size:30px; }
-  .profile-photo{ width:min(52vw,200px); }
+  .profile .content{ padding-bottom:44px; }
   .verse-text{ font-size:18px; }
   #wish-list{ min-height:220px; }
   #rsvp-form textarea{ height:52px; }
